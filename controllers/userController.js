@@ -1,7 +1,16 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
 
 exports.newUser = async (req, res) => {
+
+    //show error messages of express-validator
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+
 
 
     //verify if the user already exist
