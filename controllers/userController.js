@@ -11,8 +11,6 @@ exports.newUser = async (req, res) => {
     }
 
 
-
-
     //verify if the user already exist
     const { email, password } = req.body;
 
