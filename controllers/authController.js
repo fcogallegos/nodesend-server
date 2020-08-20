@@ -44,21 +44,6 @@ exports.authenticateUser = async (req, res, next) => {
 
 exports.userAuthenticated = async (req, res, next) => {
     
-    const authHeader = req.get('Authorization');
+    res.json({ user: req.user });
 
-    if(authHeader) {
-        //get token
-        const token = authHeader.split(' ')[1];
-
-        //check the JWT
-        try {
-            const user = jwt.verify(token, process.env.SECRET);
-        
-            res.json({user});
-        } catch (error) {
-            console.log(error);
-            console.log('JWT is not valid');
-        }
-    }
-    return next();
 } 
