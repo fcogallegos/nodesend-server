@@ -1,18 +1,36 @@
 const Links = require('../models/Link');
 const shortid = require('shortid')
+const bcrypt = require('bcrypt');
 
 exports.newLink = async (req, res, next) => {
     
     //verify if there are errors
 
     //create a link object
-    const { original_name, password } = req.body;
+    const { original_name } = req.body;
     
     const link = new Links();
     link.url = shortid.generate();
     link.name = shortid.generate();
     link.original_name = original_name;
-    link.password = password;
+    
+
+    if(req.user) {
+        const { password, downloads } = req.body;
+        
+        //assign to link the downloads number
+        if(downloads) {
+            link.downloads = downloads;
+        }
+        //assign a password 
+        if(password) {
+            const salt = await bcrypt.genSalt(10);
+            link.password = await bcrypt.hash(password, salt);
+        }
+
+        //assign the author
+        link.author = req.user.id;
+    }
 
     //save in the database
     try {
