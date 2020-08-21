@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 
 
 router.post('/',
+    auth,
     filesController.uploadFile
 );
 
