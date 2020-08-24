@@ -47,3 +47,26 @@ exports.newLink = async (req, res, next) => {
         console.log(error);
     }
 }
+
+//get the link
+exports.getLink = async (req, res, next) => {
+
+    //console.log(req.params.url);
+    const { url } = req.params;
+
+    //verify if exist the link
+    const link = await Links.findOne({url});
+
+    if(!link) {
+        res.status(404).json({msg: 'That link does not exist'});
+        return next();
+    }
+
+    //if the file exist
+    res.json({file: link.name});
+
+    //if the downloads are equals to 1 - remove the input and remove the file
+
+    //if the downloads are > to 1 - rest 1
+
+}
