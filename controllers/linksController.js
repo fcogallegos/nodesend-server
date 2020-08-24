@@ -66,15 +66,16 @@ exports.getLink = async (req, res, next) => {
     res.json({file: link.name});
 
     //if the downloads are equals to 1 - remove the input and remove the file
-    const { downloads } = link;
+    const { downloads, name } = link;
 
     if(downloads === 1) {
         console.log('Yes, just there is one');
 
         //delete the file
-        
+        req.file = name;
 
         //delete the input of database
+        await Links.findOneAndRemove({url});
 
         next();
     } else {

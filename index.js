@@ -8,7 +8,7 @@ const app = express();
 conectDB();
 
 // port of the app
-const port = process.env.PORT || 12000;
+const port = process.env.PORT || 4000;
 
 //enable to read the data of a body
 app.use( express.json() );
