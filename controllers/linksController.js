@@ -12,15 +12,17 @@ exports.newLink = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
+    //console.log(req.body);
+
     //create a link object
-    const { original_name } = req.body;
+    const { original_name, name } = req.body;
     
     const link = new Links();
     link.url = shortid.generate();
-    link.name = shortid.generate();
+    link.name = name;
     link.original_name = original_name;
     
-
+    //if the user is authenticated
     if(req.user) {
         const { password, downloads } = req.body;
         
@@ -48,6 +50,16 @@ exports.newLink = async (req, res, next) => {
     }
 }
 
+//get a listed of all the links
+exports.allLinks = async (req, res) => {
+    try {
+        const links = await Links.find({}).select('url -_id');
+        res.json({links});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 //get the link
 exports.getLink = async (req, res, next) => {
 
@@ -65,22 +77,5 @@ exports.getLink = async (req, res, next) => {
     //if the file exist
     res.json({file: link.name});
 
-    //if the downloads are equals to 1 - remove the input and remove the file
-    const { downloads, name } = link;
-
-    if(downloads === 1) {
-        console.log('Yes, just there is one');
-
-        //delete the file
-        req.file = name;
-
-        //delete the input of database
-        await Links.findOneAndRemove({url});
-
-        next();
-    } else {
-        //if the downloads are > to 1 - rest 1
-        link.downloads--;
-        await link.save();
-    }
+    next();
 }

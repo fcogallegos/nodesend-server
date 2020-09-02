@@ -15,9 +15,12 @@ router.post('/',
     linksController.newLink
 );
 
+router.get('/',
+    linksController.allLinks
+);
+
 router.get('/:url',
-    linksController.getLink,
-    filesController.deleteFile
+    linksController.getLink
 );
 
 module.exports = router;

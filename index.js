@@ -20,6 +20,9 @@ const port = process.env.PORT || 4000;
 //enable to read the data of a body
 app.use( express.json() );
 
+// enable Public Folder
+app.use( express.static('uploads') );
+
 //routes of the app - endpoints
 app.use('/api/users', require('./routes/users'));
 app.use('/api/auth', require('./routes/auth'));
