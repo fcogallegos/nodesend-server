@@ -3,7 +3,6 @@ const shortid = require('shortid')
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
-
 exports.newLink = async (req, res, next) => {
     
     //verify if there are errors
@@ -60,6 +59,46 @@ exports.allLinks = async (req, res) => {
     }
 }
 
+// return if the links has password or not
+exports.hasPassword = async (req, res, next) => {
+    //console.log(req.params.url);
+    const { url } = req.params;
+
+    //verify if exist the link
+    const link = await Links.findOne({url});
+
+    if(!link) {
+        res.status(404).json({msg: 'That link does not exist'});
+        return next();
+    }
+
+    if(link.password) {
+        return res.json({ password: true, link: link.url });
+    }
+
+    next();
+}
+
+// Verify if the password is correct
+exports.verifyPassword = async (req, res, next) => {
+    
+    const { url } = req.params;
+    const { password } = req.body;
+
+    
+    // consult for the Link
+    const link = await Links.findOne({url});
+
+    // verify the password
+    if(bcrypt.compareSync( password, link.password )) {
+        // allow download the file
+        next();
+    } else {
+        return res.status(401).json({msg: 'Incorrect Password'})
+    }
+
+}
+
 //get the link
 exports.getLink = async (req, res, next) => {
 
@@ -75,7 +114,7 @@ exports.getLink = async (req, res, next) => {
     }
 
     //if the file exist
-    res.json({file: link.name});
+    res.json({file: link.name, password: false});
 
     next();
 }
